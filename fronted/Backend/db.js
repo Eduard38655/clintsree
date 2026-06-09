@@ -7,10 +7,12 @@ const pool = new Pool({
   port: 5432,
   database: "cliente_qyqz",
   user: "cliente_qyqz_user",
-  password:"8iJbcyqJtwUB1qwAaPAwvt3hzBFaidX7",
+  password: process.env.DB_PASSWORD,
   ssl: {
     rejectUnauthorized: false,
   },
+
+  
 });
 
 export default pool;
