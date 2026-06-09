@@ -39,6 +39,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
   }
 
   async function handleSave() {
+    console.log(nombre, apellido, balance, status,email)
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -71,6 +72,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
             balance,
             status,
             fecha: new Date(),
+            email
           }),
         });
       }

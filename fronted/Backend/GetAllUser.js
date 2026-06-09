@@ -11,6 +11,7 @@ router.get("/info", async (req, res) => {
 
     console.log(`✅ ${result.rows.length} registros obtenidos`);
 
+    
     res.json({
       success: true,
       count: result.rows.length,
