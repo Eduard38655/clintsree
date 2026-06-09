@@ -6,12 +6,12 @@ const router = express.Router();
 router.get("/info", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM cliente"
+      "SELECT * FROM cliente order by id "
     );
 
     console.log(`✅ ${result.rows.length} registros obtenidos`);
 
-    
+
     res.json({
       success: true,
       count: result.rows.length,
