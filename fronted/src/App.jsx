@@ -4,7 +4,7 @@ function App(params) {
     return (
          
 
-        <Routes>
+        <Routes basename="/clintsree">
             <Route path="/" element={<HomePage />} />
         </Routes>
     )

@@ -1,4 +1,5 @@
 {
+  "homepage": "https://Eduard38655.github.io/clintsree/",
   "name": "fronted",
   "private": true,
   "version": "0.0.0",
@@ -8,10 +9,13 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "nodemon NodeRouter.js"
+    "start": "nodemon NodeRouter.js",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build"
   },
   "dependencies": {
     "dayjs": "^1.11.20",
+    "deploy": "^1.1.0",
     "msnodesqlv8": "^5.2.0",
     "mssql": "^12.5.4",
     "mysql2": "^3.22.3",
