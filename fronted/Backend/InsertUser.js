@@ -1,81 +1,68 @@
 import express from "express";
-import { getPool } from "./db.js";
+import pool from "./db.js";
 
 const router = express.Router();
 
-// GET - Obtener TODOS los clientes
 router.post("/user", async (req, res) => {
   try {
     const { nombre, apellido, balance, status, fecha } = req.body;
 
-    const pool = getPool();
-    const result = await pool
-      .request()
-      .input("nombre", nombre)
-      .input("apellido", apellido)
-      .input("fecha", fecha)
-      .input("balance", balance)
-      .input("status", status).query(`
-    INSERT INTO cliente
-    (nombre, apellido, fecha, balance, status)
-    VALUES
-    (@nombre, @apellido, @fecha, @balance, @status)
-  `);
-     
-    if (result.rowsAffected == 1) {
-      return res.json({
-        data: "datos oingresado",
-        ok: true,
-      });
-    }
+    const result = await pool.query(
+      `
+      INSERT INTO cliente
+      (nombre, apellido, fecha, balance, status)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+      `,
+      [nombre, apellido, fecha, balance, status]
+    );
+
+    res.json({
+      ok: true,
+      data: result.rows[0],
+    });
   } catch (err) {
     console.error("❌ Error:", err.message);
+
     res.status(500).json({
-      success: false,
+      ok: false,
       error: err.message,
-       ok: false,
     });
   }
 });
 
-
- router.put("/UpdateUser/:id", async (req, res) => {
+router.put("/UpdateUser/:id", async (req, res) => {
   const { id } = req.params;
   const { nombre, apellido, balance, status, fecha } = req.body;
 
   try {
-    const result = await getPool()
-      .request()
-      .input("id", id)
-      .input("nombre", nombre)
-      .input("apellido", apellido)
-      .input("fecha", fecha)
-      .input("balance", balance)
-      .input("status", status)
-      .query(`
-        UPDATE cliente
-        SET
-          nombre = @nombre,
-          apellido = @apellido,
-          fecha = @fecha,
-          balance = @balance,
-          status = @status
-        WHERE id = @id
-      `);
+    const result = await pool.query(
+      `
+      UPDATE cliente
+      SET
+        nombre = $1,
+        apellido = $2,
+        fecha = $3,
+        balance = $4,
+        status = $5
+      WHERE id = $6
+      RETURNING *
+      `,
+      [nombre, apellido, fecha, balance, status, id]
+    );
 
     res.json({
       ok: true,
-      rowsAffected: result.rowsAffected[0],
+      data: result.rows[0],
     });
   } catch (err) {
     console.error("❌ Error:", err.message);
+
     res.status(500).json({
-      success: false,
-      error: err.message,
       ok: false,
+      error: err.message,
     });
   }
 });
 
- 
 export default router;
