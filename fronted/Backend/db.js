@@ -7,12 +7,15 @@ const pool = new Pool({
   port: 5432,
   database: "cliente_qyqz",
   user: "cliente_qyqz_user",
-  password: process.env.DB_PASSWORD,
+  password:"8iJbcyqJtwUB1qwAaPAwvt3hzBFaidX7",
   ssl: {
     rejectUnauthorized: false,
   },
-
-  
 });
+
+export async function initializePool() {
+  await pool.query("SELECT NOW()");
+  console.log("✅ PostgreSQL conectado");
+}
 
 export default pool;
