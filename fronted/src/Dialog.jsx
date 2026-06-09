@@ -49,7 +49,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
       let response;
 
       if (operation === "create") {
-        response = await fetch( `${import.meta.env.API_ROUTER}/InsertUser/user` , {
+        response = await fetch( `${import.meta.env.VITE_API_ROUTER}/InsertUser/user` , {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -62,7 +62,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
           }),
         });
       } else {
-        response = await fetch(`${import.meta.env.API_ROUTER}/InsertUser/UpdateUser/${user.id}`, {
+        response = await fetch(`${import.meta.env.VITE_API_ROUTER}/InsertUser/UpdateUser/${user.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
