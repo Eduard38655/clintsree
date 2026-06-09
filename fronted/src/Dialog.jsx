@@ -114,6 +114,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
         </div>
 
         {/* Body */}
+        
         <div className={style.body}>
 
           {errors.general && (
