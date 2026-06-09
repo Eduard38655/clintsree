@@ -21,7 +21,7 @@ function App() {
 
   async function fetchData() {
     try {
-      const response = await fetch("http://localhost:3000/GetAllUser/info");
+      const response = await fetch(`${import.meta.env.VITE_API_ROUTER}/GetAllUser/info`);
       const data = await response.json();
       setUsers(data.data || []);
       setCurrentPage(1);
