@@ -19,12 +19,16 @@ function App() {
 
   useEffect(() => { fetchData(); }, []);
 
-  async function fetchData() {
+  async function fetchData(goToLastPage = false, preservePage = false) {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_ROUTER}/GetAllUser/info`)
+      const response = await fetch(`${import.meta.env.VITE_API_ROUTER}/GetAllUser/info`);
       const data = await response.json();
-      setUsers(data.data || []);
-      setCurrentPage(1);
+      const rows = data.data || [];
+      setUsers(rows);
+      if (!preservePage) {
+        const page = goToLastPage ? Math.max(1, Math.ceil(rows.length / perPage)) : 1;
+        setCurrentPage(page);
+      }
       setSelected([]);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -73,7 +77,7 @@ function App() {
             setDialogOpen(false);
             setSelectedUser(null);
           }}
-          onSaved={fetchData}         // ← refresca la tabla al guardar
+          onSaved={(op) => fetchData(op === "create", op === "edit")} // ← create -> last, edit -> preserve
         />
       )}
 
@@ -105,7 +109,7 @@ function App() {
               <i className="fa-solid fa-print"></i>
             </button>
 
-          <ButtonDownload  DatosDownload={paginatedUsers}  />
+            <ButtonDownload DatosDownload={paginatedUsers} />
           </div>
         </div>
 
@@ -116,12 +120,15 @@ function App() {
               <tr>
 
                 <th>ID</th>
-                <th>NOMBRE</th>
+                <th>NOMBRE {" "}
+                  <button className={style.sortButton} >
+                    <i className="fa-solid fa-sort"></i>
+                  </button>  </th>
                 <th>APELLIDO</th>
                 <th>CORREO</th>
                 <th>FECHA DE REGISTRO</th>
                 <th>BALANCE</th>
-                <th>Estado</th>
+                <th>ESTADO</th>
                 <th>ACCIONES</th>
               </tr>
             </thead>
@@ -134,7 +141,7 @@ function App() {
                   <td>{user.apellido}</td>
                   <td>{user.email}</td>
                   <td>{dayjs(user.fecha).format("MMM D, YYYY")}</td>
-                  <td>${(user.balance).toLocaleString("en-US")}</td>
+                  <td>  {Number(user.balance).toLocaleString("en-US", { style: "currency", currency: "USD" })}</td>
                   <td>
                     <span className={statusClass(user.status)}>{user.status}</span>
                   </td>
@@ -147,7 +154,7 @@ function App() {
                         setDialogOpen(true);
                       }}
                     >
-                      <i className="fa-solid fa-pen"></i> Editar
+                      <i className="fa-solid fa-pen"></i> EDITAR
                     </button>
                   </td>
                 </tr>

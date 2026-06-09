@@ -131,19 +131,20 @@ main {
   font-size: 16px;
 }
 
-/* ── Table ── */
+/* ── Table ── */ /*Tetxo en mayuscula*/
 .table_container {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 5px;
   overflow: hidden;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
 }
 
 .table_container table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 .table_container thead tr {
@@ -190,7 +191,9 @@ main {
 }
 
 .status-inactivo {
- background: #FFF7ED; color: #7C2D12; border: 1px solid #FDBA74;
+  background: #fff7ed;
+  color: #7c2d12;
+  border: 1px solid #fdba74;
   border: 1px dashed #86efac;
   padding: 3px 10px;
   border-radius: 999px;
@@ -218,7 +221,12 @@ main {
   font-size: 15px;
   transition: background 0.1s;
 }
-
+.sortButton{
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #334155;
+}
 .actionBtn:hover {
   background: var(--surface-container);
   color: var(--text-primary);
