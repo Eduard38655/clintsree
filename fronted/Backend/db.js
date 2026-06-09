@@ -1,33 +1,16 @@
-import sql from "mssql/msnodesqlv8.js";
- 
-const config = {
-  server: "LAPTOP-GNIDI8TC",
-  database: "cliente",
-  user: "eduardo123",
-  password: "e-267Lcdx",
-  driver: "ODBC Driver 18 for SQL Server",
-  options: {
-    instanceName: "SQLEXPRESS",
-    encrypt: false,
-    trustServerCertificate: true,
-    trustedConnection: false,
+import pg from "pg";
+
+const { Pool } = pg;
+
+const pool = new Pool({
+  host: "dpg-d8k0ib57vvec73e7i6gg-a.oregon-postgres.render.com",
+  port: 5432,
+  database: "cliente_qyqz",
+  user: "cliente_qyqz_user",
+  password:"8iJbcyqJtwUB1qwAaPAwvt3hzBFaidX7",
+  ssl: {
+    rejectUnauthorized: false,
   },
-};
-let pool = null;
+});
 
-export async function initializePool() {
-  try {
-    console.log("🔄 Conectando a SQL Server...");
-    pool = await sql.connect(config);
-    console.log("✅ Conectado a SQL Server con usuario: eduardo123");
-    return pool;
-  } catch (err) {
-    console.error("❌ Error de conexión:", err.message);
-    throw err;
-  }
-}
-
-export function getPool() {
-  if (!pool) throw new Error("Pool not initialized");
-  return pool;
-}
+export default pool;
