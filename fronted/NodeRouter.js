@@ -20,12 +20,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/GetAllUser", GetAllUser);
 app.use("/InsertUser", InsertUser);
 // Configuración
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 const HOST = process.env.HOST || "localhost";
 
 await initializePool();
 
 // Levantar servidor
-app.listen(PORT, HOST, () => {
-  console.log(`Servidor corriendo en http://${HOST}:${PORT}`);
+
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
