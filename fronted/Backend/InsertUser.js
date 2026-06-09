@@ -7,8 +7,8 @@ router.post("/user", async (req, res) => {
   try {
     const { nombre, apellido, balance, status, fecha, email } = req.body;
     const numericBalance = Number(balance);
-console.log("POST body:", { nombre, apellido, balance, status, fecha});
-const email="U8oM9@example.com"
+console.log("POST body:", { nombre, apellido, balance, status, fecha,email});
+ 
     if (!nombre || !apellido || !email || !status || Number.isNaN(numericBalance)) {
       return res.status(400).json({
         ok: false,
