@@ -38,7 +38,7 @@ router.put("/UpdateUser/:id", async (req, res) => {
   try {
     const result = await pool.query(
       `
-      UPDATE cliente
+      UPDATE cliente_qyqz
       SET
         nombre = $1,
         apellido = $2,
