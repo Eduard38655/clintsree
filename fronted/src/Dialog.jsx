@@ -34,6 +34,8 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
     if (!apellido.trim()) newErrors.apellido = "Campo requerido";
     if (!email.trim()) newErrors.email = "Campo requerido";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email inválido";
+    if (!balance.toString().trim()) newErrors.balance = "Campo requerido";
+    else if (Number.isNaN(Number(balance))) newErrors.balance = "Balance inválido";
     if (!status) newErrors.status = "Selecciona un status";
     return newErrors;
   }
@@ -69,10 +71,10 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
           body: JSON.stringify({
             nombre,
             apellido,
-            balance,
+            balance: Number(balance),
             status,
             fecha: new Date(),
-            email
+            email,
           }),
         });
       }
