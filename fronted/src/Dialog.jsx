@@ -14,7 +14,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
     if (operation === "edit" && user) {
       setNombre((user.nombre || "").toUpperCase());
       setApellido((user.apellido || "").toUpperCase());
-      setEmail((user.email || "").toUpperCase());
+      setEmail((user.email || ""));
       setBalance(user.balance?.toString() || "");
       setStatus(user.status || "");
     } else {
@@ -105,7 +105,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
             body: JSON.stringify({
               nombre,
               apellido,
-              email: email.toLowerCase(),
+              email: email,
               balance: cleanBalance,
               status,
               fecha: new Date(),
@@ -216,7 +216,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value.toUpperCase())}
+                onChange={(e) => setEmail(e.target.value)}
                 className={errors.email ? style.inputError : ""}
               />
             </div>

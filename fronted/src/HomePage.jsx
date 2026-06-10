@@ -129,10 +129,8 @@ function HomePage() {
               <tr>
                 <th>ID</th>
                 <th>
-                  NOMBRE{" "}
-                  <button className={style.sortButton}>
-                    <i className="fa-solid fa-sort"></i>
-                  </button>
+                  NOMBRE
+                   
                 </th>
                 <th>APELLIDO</th>
                 <th>CORREO</th>
