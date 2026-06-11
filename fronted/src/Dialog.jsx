@@ -14,8 +14,8 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
     if (operation === "edit" && user) {
       setNombre((user.nombre || "").toUpperCase());
       setApellido((user.apellido || "").toUpperCase());
-      setEmail((user.email || ""));
-      setBalance(user.balance?.toString() || "");
+      setEmail(user.email || "");
+      setBalance(formatBalance(user.balance?.toString() || ""));
       setStatus(user.status || "");
     } else {
       setNombre("");
@@ -29,44 +29,89 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
 
   if (!open) return null;
 
+  function normalizeBalanceValue(value) {
+    if (value === "" || value === null || value === undefined) return "";
+    const cleaned = value.toString().replace(/[^0-9.,]/g, "");
+    if (!cleaned) return "";
+
+    const hasComma = cleaned.includes(",");
+    const hasDot = cleaned.includes(".");
+    const trailingSeparator = /[.,]$/.test(cleaned);
+
+    if (hasComma && hasDot) {
+      const lastSeparator = cleaned.match(/[.,](?=[^.,]*$)/)?.[0];
+      if (lastSeparator === ",") {
+        return cleaned.replace(/\./g, "").replace(/,/g, ".");
+      }
+      const parts = cleaned.replace(/,/g, "").split(".");
+      const decimal = parts.pop();
+      return `${parts.join("")}${decimal ? `.${decimal}` : ""}`;
+    }
+
+    if (hasComma) {
+      const parts = cleaned.split(",");
+      const last = parts[parts.length - 1];
+      if (parts.length === 1) return cleaned;
+      if (last.length === 0) {
+        return parts.slice(0, -1).join("");
+      }
+      if (last.length <= 2) {
+        return `${parts.slice(0, -1).join("").replace(/,/g, "")}.${last}`;
+      }
+      return parts.join("");
+    }
+
+    if (hasDot) {
+      const parts = cleaned.split(".");
+      const last = parts[parts.length - 1];
+      if (parts.length === 1) return cleaned;
+      if (last.length === 0) {
+        return parts.slice(0, -1).join("");
+      }
+      if (last.length <= 2) {
+        return `${parts.slice(0, -1).join("")}.${last}`;
+      }
+      return parts.join("");
+    }
+
+    return cleaned;
+  }
+
   function formatBalance(value) {
     if (value === "" || value === null || value === undefined) return "";
-    const num = Number(value.toString().replace(/,/g, ""));
-    if (Number.isNaN(num)) return value;
-    return num.toLocaleString("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    });
+    const normalized = normalizeBalanceValue(value);
+    const trailingSeparator = /[.,]$/.test(value.toString());
+    const parts = normalized.split(".");
+    const integerPart = parts[0] || "";
+    const decimalPart = parts[1] || "";
+
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (trailingSeparator) return `${formattedInteger}.`;
+    return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
   }
 
   function handleBalanceChange(e) {
-    const raw = e.target.value.replace(/[^0-9.]/g, "");
-    const parts = raw.split(".");
-    const clean = parts.length > 2 ? parts[0] + "." + parts.slice(1).join("") : raw;
-    setBalance(clean);
+    const value = e.target.value.replace(/[^0-9.,]/g, "");
+    setBalance(formatBalance(value));
   }
 
   function validate() {
     const newErrors = {};
 
-    if (!nombre.trim())
-      newErrors.nombre = "Campo requerido";
+    if (!nombre.trim()) newErrors.nombre = "Campo requerido";
 
-    if (!apellido.trim())
-      newErrors.apellido = "Campo requerido";
+    if (!apellido.trim()) newErrors.apellido = "Campo requerido";
 
-    if (!email.trim())
-      newErrors.email = "Campo requerido";
+    if (!email.trim()) newErrors.email = "Campo requerido";
     else if (!/\S+@\S+\.\S+/.test(email.toLowerCase()))
       newErrors.email = "Email inválido";
 
-    if (!balance.toString().trim())
-      newErrors.balance = "Campo requerido";
-    else if (Number.isNaN(Number(balance.replace(/,/g, ""))))
+    const normalizedBalance = normalizeBalanceValue(balance);
+    if (!normalizedBalance.toString().trim()) newErrors.balance = "Campo requerido";
+    else if (Number.isNaN(Number(normalizedBalance)))
       newErrors.balance = "Balance inválido";
 
-    if (!status)
-      newErrors.status = "Selecciona un status";
+    if (!status) newErrors.status = "Selecciona un status";
 
     return newErrors;
   }
@@ -78,24 +123,27 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
       return;
     }
 
-    const cleanBalance = Number(balance.toString().replace(/,/g, ""));
+    const cleanBalance = Number(normalizeBalanceValue(balance));
 
     try {
       let response;
 
       if (operation === "create") {
-        response = await fetch(`${import.meta.env.VITE_API_ROUTER}/InsertUser/user`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nombre,
-            apellido,
-            email: email.toLowerCase(),
-            balance: cleanBalance,
-            status,
-            fecha: new Date(),
-          }),
-        });
+        response = await fetch(
+          `${import.meta.env.VITE_API_ROUTER}/InsertUser/user`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              nombre,
+              apellido,
+              email: email.toLowerCase(),
+              balance: cleanBalance,
+              status,
+              fecha: new Date(),
+            }),
+          }
+        );
       } else {
         response = await fetch(
           `${import.meta.env.VITE_API_ROUTER}/InsertUser/UpdateUser/${user.id}`,
@@ -105,7 +153,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
             body: JSON.stringify({
               nombre,
               apellido,
-              email: email,
+              email: email.toLowerCase(),
               balance: cleanBalance,
               status,
               fecha: new Date(),
@@ -163,7 +211,9 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
 
         <div className={style.body}>
           {errors.general && (
-            <p style={{ color: "var(--error)", fontSize: "13px" }}>{errors.general}</p>
+            <p style={{ color: "var(--error)", fontSize: "13px" }}>
+              {errors.general}
+            </p>
           )}
 
           <div className={style.row}>
@@ -235,7 +285,7 @@ export default function UserDialog({ open, onClose, onSaved, operation, user }) 
                 id="balance"
                 type="text"
                 placeholder="0"
-                value={formatBalance(balance)}
+                value={balance}
                 onChange={handleBalanceChange}
                 className={errors.balance ? style.inputError : ""}
               />

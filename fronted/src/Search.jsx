@@ -13,7 +13,7 @@ function SearchComp({ search, setSearch, statusFilter, setStatusFilter }) {
       />
 
 
-      <select
+    {/*  <select
         className={styles.filterSelect}
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
@@ -21,17 +21,17 @@ function SearchComp({ search, setSearch, statusFilter, setStatusFilter }) {
         <option value="">Todos los estados</option>
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
-      </select>
+      </select>*/}
 
 
-      <button
+     {/* <button
         type="button"
         className={styles.filterButton}
         onClick={() => { setSearch(""); setStatusFilter(""); }}
       >
         <i className="fa-solid fa-filter-circle-xmark"></i>
         Limpiar
-      </button>
+      </button> */}
     </div>
   );
 }

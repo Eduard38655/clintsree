@@ -42,8 +42,14 @@ function HomePage() {
   }
 
 
+
+
   const filteredUsers = users.filter((user) => {
-    const matchNombre = user.nombre.toLowerCase().includes(search.toLowerCase());
+
+    const texto = search.toLowerCase();
+    const matchNombre =
+      user.nombre.toLowerCase().includes(texto) ||
+      user.apellido.toLowerCase().includes(texto);
     const matchStatus = statusFilter === "" || user.status.toLowerCase() === statusFilter;
     return matchNombre && matchStatus;
   });
@@ -130,7 +136,7 @@ function HomePage() {
                 <th>ID</th>
                 <th>
                   NOMBRE
-                   
+
                 </th>
                 <th>APELLIDO</th>
                 <th>CORREO</th>
@@ -178,7 +184,7 @@ function HomePage() {
                 className={style.pageBtn}
 
 
-               
+
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => p - 1)}
               >
